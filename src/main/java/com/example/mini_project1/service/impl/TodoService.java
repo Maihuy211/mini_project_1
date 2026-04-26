@@ -23,12 +23,9 @@ public class TodoService implements ITodoService {
     @Override
     public Todo save(TodoDTO todoDTO) {
         Todo todo;
-        if(todoDTO.getId() != null){
-            todo = todoRepository.findById(todoDTO.getId()).orElse(null);
-            if (todo == null) {
-                return null;
-            }
-        }else{
+        if (todoDTO.getId() != null) {
+            todo = todoRepository.findById(todoDTO.getId()).orElse(new Todo());
+        } else {
             todo = new Todo();
         }
         todo.setContent(todoDTO.getContent());
