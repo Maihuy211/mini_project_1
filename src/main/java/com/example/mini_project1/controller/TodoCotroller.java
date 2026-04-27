@@ -3,6 +3,7 @@ package com.example.mini_project1.controller;
 import com.example.mini_project1.dto.TodoDTO;
 import com.example.mini_project1.model.Todo;
 import com.example.mini_project1.service.ITodoService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -21,23 +23,53 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class TodoCotroller {
     private final ITodoService todoService;
 
+    @GetMapping("/welcome")
+    public String welcome() {
+        return "welcome";
+    }
+
+    @PostMapping("/welcome")
+    public String saveOwnerName(@RequestParam("ownerName") String ownerName, 
+                                HttpSession session, 
+                                RedirectAttributes redirectAttributes) {
+        if (ownerName == null || ownerName.trim().isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Tên chủ sở hữu không được để trống!");
+            return "redirect:/welcome";
+        }
+        session.setAttribute("ownerName", ownerName.trim());
+        return "redirect:/";
+    }
+
     @GetMapping
-    public String home(Model model) {
+    public String home(Model model, HttpSession session) {
+        String ownerName = (String) session.getAttribute("ownerName");
+        if (ownerName == null) {
+            return "redirect:/welcome";
+        }
         model.addAttribute("todos", todoService.findAll());
+        model.addAttribute("ownerName", ownerName);
         return "todo-list";
     }
 
     @GetMapping("/add")
-    public String add(Model model){
+    public String add(Model model, HttpSession session){
+        String ownerName = (String) session.getAttribute("ownerName");
+        if (ownerName == null) {
+            return "redirect:/welcome";
+        }
         model.addAttribute("todo", new TodoDTO());
         return "form";
     }
 
     @GetMapping("/edit/{id}")
-    public String edit(@PathVariable(name = "id") Long id, Model model) {
+    public String edit(@PathVariable(name = "id") Long id, Model model, HttpSession session) {
+        String ownerName = (String) session.getAttribute("ownerName");
+        if (ownerName == null) {
+            return "redirect:/welcome";
+        }
         Todo todo = todoService.findById(id);
         if (todo == null) {
-            return "redirect:/todos";
+            return "redirect:/";
         }
         TodoDTO dto = new TodoDTO();
         dto.setId(todo.getId());

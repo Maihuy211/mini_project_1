@@ -5,16 +5,24 @@
     <title>Title</title>
 </head>
 <body>
-<a th:href="@{/add}">Thêm</a>
-<table border="1" cellspacing="0" cellpadding="10">
+<h3 th:text="|#{todo.list.owner} [${ownerName}]|"></h3>
+
+<div style="margin-bottom: 10px;">
+    <a th:href="@{/(lang='vi')}" th:text="#{lang.vi}">Tiếng Việt</a> |
+    <a th:href="@{/(lang='en')}" th:text="#{lang.en}">English</a>
+</div>
+
+<a th:href="@{/add}" th:text="#{todo.list.add}">Thêm</a>
+
+<table border="1" cellspacing="0" cellpadding="10" style="margin-top: 10px;">
     <thead>
     <tr>
-        <th>ID</th>
-        <th>Nội dung</th>
-        <th>Ngày hết hạn</th>
-        <th>Trạng thái</th>
-        <th>Ưu tiên</th>
-        <th>Hành động</th>
+        <th th:text="#{todo.table.id}">ID</th>
+        <th th:text="#{todo.table.content}">Nội dung</th>
+        <th th:text="#{todo.table.dueDate}">Ngày hết hạn</th>
+        <th th:text="#{todo.table.status}">Trạng thái</th>
+        <th th:text="#{todo.table.priority}">Ưu tiên</th>
+        <th th:text="#{todo.table.action}">Hành động</th>
     </tr>
     </thead>
     <tbody>
@@ -25,17 +33,18 @@
         <td th:text="${todo.status}"></td>
         <td th:text="${todo.priority}"></td>
         <td>
-            <a th:href="@{/edit/{id}(id=${todo.id})}">Sửa</a>
+            <a th:href="@{/edit/{id}(id=${todo.id})}" th:text="#{todo.action.edit}">Sửa</a> |
             <a th:href="@{/delete/{id}(id=${todo.id})}"
-               onclick="return confirm('Bạn có chắc muốn xóa?')">
+               th:onclick="return confirm(#{todo.action.confirm})"
+               th:text="#{todo.action.delete}">
                 Xóa
             </a>
         </td>
     </tr>
     </tbody>
-
 </table>
-<p th:if="${message}" th:text="${message}" style="color: green;"></p>
+
+<p th:if="${message}" th:text="${message}" style="color: green; font-weight: bold;"></p>
 
 </body>
 </html>

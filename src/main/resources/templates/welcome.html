@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form th:action="@{/welcome}" method="post">
+    <div>
+        <label th:text="#{welcome.ownerName}">Tên chủ sở hữu:</label><br>
+        <input type="text" id="ownerName" name="ownerName">
+        <br>
+        <span style="color: red;" th:if="${error}" th:text="${error}"></span>
+    </div>
+    <br>
+    <button th:text="#{welcome.submit}" type="submit">Bắt đầu</button>
+</form>
+
+</body>
+</html>
